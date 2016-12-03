@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { css, StyleSheet } from 'aphrodite/no-important';
 import ScrollLock from 'react-scrolllock';
+import SwipeableViews from 'react-swipeable-views';
 
 import theme from './theme';
 import Arrow from './components/Arrow';
@@ -196,44 +197,19 @@ class Lightbox extends Component {
 			currentImage,
 			images,
 			imageCountSeparator,
-			onClickImage,
 			showImageCount,
-			showThumbnails,
 		} = this.props;
 
 		if (!images || !images.length) return null;
 
-		const image = images[currentImage];
-
-		let srcset;
-		let sizes;
-
-		if (image.srcset) {
-			srcset = image.srcset.join();
-			sizes = '100vw';
-		}
-
-		const thumbnailsSize = showThumbnails ? theme.thumbnail.size : 0;
-		const heightOffset = `${theme.header.height + theme.footer.height + thumbnailsSize + (theme.container.gutter.vertical)}px`;
-
 		return (
 			<figure className={css(classes.figure)}>
-				{/*
-					Re-implement when react warning "unknown props"
-					https://fb.me/react-unknown-prop is resolved
-					<Swipeable onSwipedLeft={this.gotoNext} onSwipedRight={this.gotoPrev} />
-				*/}
-				<img
-					className={css(classes.image)}
-					onClick={!!onClickImage && onClickImage}
-					sizes={sizes}
-					src={image.src}
-					srcSet={srcset}
-					style={{
-						cursor: this.props.onClickImage ? 'pointer' : 'auto',
-						maxHeight: `calc(100vh - ${heightOffset})`,
-					}}
-				/>
+				<SwipeableViews
+					index={currentImage}
+					onChangeIndex={this.onChangeIndexBySwipe}
+					springConfig={{ stiffness: 200, damping: 23 }}>
+					{this.renderImage()}
+				</SwipeableViews>
 				<Footer
 					caption={images[currentImage].caption}
 					countCurrent={currentImage + 1}
@@ -243,6 +219,43 @@ class Lightbox extends Component {
 				/>
 			</figure>
 		);
+	}
+	renderImage () {
+		const {
+			images,
+			onClickImage,
+			showThumbnails,
+		} = this.props;
+
+		return images.map((image, idx) => {
+			let srcset;
+			let sizes;
+
+			if (image.srcset) {
+				srcset = image.srcset.join();
+				sizes = '100vw';
+			}
+
+			const thumbnailsSize = showThumbnails ? theme.thumbnail.size : 0;
+			const heightOffset = `${theme.header.height + theme.footer.height + thumbnailsSize + (theme.container.gutter.vertical)}px`;
+
+			return (
+				<img
+					key={idx}
+					className={css(classes.image)}
+					onClick={!!onClickImage && onClickImage}
+					sizes={sizes}
+					src={image.src}
+					srcSet={srcset}
+					style={{
+						cursor: this.props.onClickImage ? 'pointer' : 'auto',
+						maxHeight: `calc(100vh - ${heightOffset})`,
+						position: 'relative',
+						top: '50%',
+						transform: 'translateY(-50%)',
+					}} />
+			);
+		});
 	}
 	renderThumbnails () {
 		const { images, currentImage, onClickThumbnail, showThumbnails, thumbnailOffset } = this.props;
@@ -282,6 +295,7 @@ Lightbox.propTypes = {
 		})
 	).isRequired,
 	isOpen: PropTypes.bool,
+	onChangeIndex: PropTypes.func,
 	onClickImage: PropTypes.func,
 	onClickNext: PropTypes.func,
 	onClickPrev: PropTypes.func,
