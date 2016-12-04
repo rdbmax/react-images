@@ -85,6 +85,7 @@ class Gallery extends Component {
 					currentImage={this.state.currentImage}
 					images={this.props.images}
 					isOpen={this.state.lightboxIsOpen}
+					onChangeIndex={this.gotoImage}
 					onClickImage={this.handleClickImage}
 					onClickNext={this.gotoNext}
 					onClickPrev={this.gotoPrevious}
