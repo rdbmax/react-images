@@ -1893,6 +1893,7 @@ var Lightbox = (function (_Component) {
 			var currentImage = _props2.currentImage;
 			var images = _props2.images;
 			var imageCountSeparator = _props2.imageCountSeparator;
+			var onChangeIndex = _props2.onChangeIndex;
 			var showImageCount = _props2.showImageCount;
 
 			if (!images || !images.length) return null;
@@ -1904,7 +1905,7 @@ var Lightbox = (function (_Component) {
 					_reactSwipeableViews2['default'],
 					{
 						index: currentImage,
-						onChangeIndex: this.onChangeIndexBySwipe,
+						onChangeIndex: onChangeIndex,
 						springConfig: { stiffness: 200, damping: 23 } },
 					this.renderImage()
 				),
