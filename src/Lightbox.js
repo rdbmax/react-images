@@ -198,6 +198,7 @@ class Lightbox extends Component {
 			images,
 			imageCountSeparator,
 			showImageCount,
+			onChangeIndex,
 		} = this.props;
 
 		if (!images || !images.length) return null;
@@ -206,7 +207,7 @@ class Lightbox extends Component {
 			<figure className={css(classes.figure)}>
 				<SwipeableViews
 					index={currentImage}
-					onChangeIndex={this.onChangeIndexBySwipe}
+					onChangeIndex={onChangeIndex}
 					springConfig={{ stiffness: 200, damping: 23 }}>
 					{this.renderImage()}
 				</SwipeableViews>
